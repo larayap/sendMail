@@ -1,10 +1,30 @@
 import express from 'express';
 import nodemailer from 'nodemailer';
 import dotenv from 'dotenv';
+import cors, { CorsOptions } from 'cors';
 
 dotenv.config(); // Carga las variables de entorno definidas en .env
 
 const app = express();
+
+const allowedOrigins = ['http://localhost:3000', 'https://larayap.com'];
+
+const corsOptions: CorsOptions = {
+  origin: (origin, callback) => {
+    // Permite peticiones sin origen (por ejemplo, desde herramientas de testing)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Origen no permitido por CORS'));
+    }
+  },
+};
+
+app.use(cors(corsOptions));
+
+app.options('*', cors(corsOptions));
+
 app.use(express.json());
 
 app.post('/sendEmail', async (req, res) => {
