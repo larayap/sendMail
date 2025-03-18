@@ -27,6 +27,10 @@ app.options('*', cors(corsOptions));
 
 app.use(express.json());
 
+app.get('/status', (req, res) => {
+  res.status(200).json({ status: 'ok' });
+});
+
 app.post('/sendEmail', async (req, res) => {
   try {
     const { email, subject, message } = req.body;
